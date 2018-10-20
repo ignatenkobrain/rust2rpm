@@ -1,0 +1,11 @@
+[package]
+name = "rust2rpm"
+version = "0.0.1"
+authors = ["Igor Gnatenko <ignatenkobrain@fedoraproject.org>"]
+description = "Tools to package Rust crates as RPMs."
+
+[dependencies]
+cargo = "0.30"
+clap = "2"
+failure = "0.1"
+semver-parser = "0.9"
