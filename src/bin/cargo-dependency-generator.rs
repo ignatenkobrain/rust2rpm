@@ -40,18 +40,23 @@ fn main() -> Result<(), Error> {
 
     let feature = m.value_of("feature").unwrap_or("");
     let deps_by_feature = dependencies_by_feature(&manifest);
-    let deps = match deps_by_feature.get(feature) {
-        Some(deps) => deps,
+    let (features, deps) = match deps_by_feature.get(feature) {
+        Some(features, deps) => (features, deps),
         None => bail!("Feature {} doesn't exist"),
     };
 
     if m.is_present("provides") {
-        let mut selfdep = create_self_dependency(&manifest);
-        selfdep.set_features(&[feature]);
+        let selfdep = create_self_dependency(&manifest, &[feature]);
         println!("{}", rpm_dep(&selfdep)?);
     }
 
     if m.is_present("requires") {
+        for feature in features {
+            println!(
+                "{}",
+                rpm_dep(create_self_dependency(&manifest, &[feature]))?
+            );
+        }
         for dep in deps {
             println!("{}", rpm_dep(dep)?);
         }
